@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbars from "./components/Navbars";
 import "./App.css";
+import NavbarFooter from "./components/NavbarFooter";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navbars />} />
+          <Route path="/" element={<NavbarFooter />} />
         </Routes>
       </BrowserRouter>
     </>
