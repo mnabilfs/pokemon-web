@@ -5,10 +5,68 @@ import { IoWater } from "react-icons/io5";
 import { FaLeaf } from "react-icons/fa";
 import FlipCard from "../components/FlipCard";
 import ReactSelect from "react-select";
-import axios from "axios";
+import axios, { Axios } from "axios";
+import Card from "../components/Card";
 
 const Home = () => {
   const [pokemonOption, setPokemonOption] = useState([]);
+  const [pokemonData, setpokemonData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const fetchData = async (search) => {
+    try {
+      let url = search
+        ? `https://pokeapi.co/api/v2/pokemon/${search}`
+        : "https://pokeapi.co/api/v2/pokemon?limit=6&offset=0";
+
+      const res = await axios.get(url);
+
+      if (!search) {
+        const pokemonList = res.data.results;
+        const pokemonDetails = await Promise.all(
+          pokemonList.map(async (item) => {
+            try {
+              const pokeRes = await axios.get(item.url);
+              // Debugging For Abilities Unknown
+              console.log("Pokemon Response: ", pokeRes.data);
+              return {
+                ...pokeRes.data,
+                name: item.name,
+                image:
+                  pokeRes.data.sprites.other["official-artwork"].front_default,
+                url: item.url,
+                abilities: pokeRes.data.abilities.map(
+                  (ability) => ability.ability.name
+                ),
+                types: pokeRes.data.types.map((t) => t.type.name),
+              };
+            } catch (error) {
+              console.log("Error: ", error);
+            }
+          })
+        );
+        setpokemonData(pokemonDetails.filter((pokemon) => pokemon !== null));
+      } else {
+        setpokemonData(
+          res.data.name && [
+            {
+              ...res,
+              data,
+              name: res.data.name,
+              image: res.data.sprites.other["official-artwork"].front_default,
+              url: url,
+              abilities: res.data.abilities.map(
+                (ability) => ability.ability.name
+              ),
+              types: res.data.types.map((t) => t.type.name),
+            },
+          ]
+        );
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
 
   const fetchOption = async () => {
     try {
@@ -16,9 +74,9 @@ const Home = () => {
         "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0"
       );
       setPokemonOption(
-        res.data.results.map((item) => ({ 
-          value: item.name, 
-          label: item.name 
+        res.data.results.map((item) => ({
+          value: item.name,
+          label: item.name,
         }))
       );
     } catch (e) {
@@ -26,14 +84,18 @@ const Home = () => {
     }
   };
 
+  const handleSearchChange = (selectedOption) => {
+    setSearchTerm(selectedOption ? selectedOption.value.toLowerCase() : "");
+  };
+
   useEffect(() => {
-    fetchOption()
-  }, [])
+    fetchData(searchTerm);
+    fetchOption();
+  }, [searchTerm]);
 
   return (
     <>
       <div className="w-full">
-
         {/* Hero Section */}
         <div className="w-full relative">
           <img
@@ -129,6 +191,7 @@ const Home = () => {
         {/* Search Pokemon */}
         <div className="flex justify-center my-5 mb-[5rem]">
           <ReactSelect
+            onChange={handleSearchChange}
             className="w-full md:w-1/2 p-2 rounded-md"
             placeholder="Search Pokemon"
             isClearable={true}
@@ -137,7 +200,19 @@ const Home = () => {
           />
         </div>
 
-
+        {/* Card */}
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+          {pokemonData?.map((pokemon, index) => (
+            <div key={index} className="w-full">
+              <Card
+                name={pokemon.name}
+                image={pokemon.image}
+                types={pokemon.types}
+                abilities={pokemon.abilities}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
