@@ -2,22 +2,24 @@ import React, { useEffect, useState } from "react";
 import wave from "../assets/wave.svg";
 import { MdElectricBolt } from "react-icons/md";
 import { IoWater } from "react-icons/io5";
-import { FaLeaf } from "react-icons/fa";
+import { FaAngleLeft, FaLeaf } from "react-icons/fa";
 import FlipCard from "../components/FlipCard";
 import ReactSelect from "react-select";
 import axios, { Axios } from "axios";
 import Card from "../components/Card";
+import { FaAngleRight } from "react-icons/fa";
 
 const Home = () => {
   const [pokemonOption, setPokemonOption] = useState([]);
   const [pokemonData, setpokemonData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchData = async (search) => {
+  const fetchData = async (search, currentPage) => {
     try {
       let url = search
         ? `https://pokeapi.co/api/v2/pokemon/${search}`
-        : "https://pokeapi.co/api/v2/pokemon?limit=6&offset=0";
+        : `https://pokeapi.co/api/v2/pokemon?limit=6&offset=` + (currentPage - 1) * 6;
 
       const res = await axios.get(url);
 
@@ -27,17 +29,13 @@ const Home = () => {
           pokemonList.map(async (item) => {
             try {
               const pokeRes = await axios.get(item.url);
-              // Debugging For Abilities Unknown
-              console.log("Pokemon Response: ", pokeRes.data);
               return {
                 ...pokeRes.data,
                 name: item.name,
                 image:
                   pokeRes.data.sprites.other["official-artwork"].front_default,
                 url: item.url,
-                abilities: pokeRes.data.abilities.map(
-                  (ability) => ability.ability.name
-                ),
+                abilities: pokeRes.data.abilities,
                 types: pokeRes.data.types.map((t) => t.type.name),
               };
             } catch (error) {
@@ -51,13 +49,10 @@ const Home = () => {
           res.data.name && [
             {
               ...res,
-              data,
               name: res.data.name,
               image: res.data.sprites.other["official-artwork"].front_default,
               url: url,
-              abilities: res.data.abilities.map(
-                (ability) => ability.ability.name
-              ),
+              abilities: res.data.abilities,
               types: res.data.types.map((t) => t.type.name),
             },
           ]
@@ -76,7 +71,7 @@ const Home = () => {
       setPokemonOption(
         res.data.results.map((item) => ({
           value: item.name,
-          label: item.name,
+          label: item.name.charAt(0).toUpperCase() + item.name.slice(1),
         }))
       );
     } catch (e) {
@@ -88,10 +83,18 @@ const Home = () => {
     setSearchTerm(selectedOption ? selectedOption.value.toLowerCase() : "");
   };
 
+  const handleNextPage = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage(currentPage - 1);
+  };
+
   useEffect(() => {
-    fetchData(searchTerm);
+    fetchData(searchTerm, currentPage);
     fetchOption();
-  }, [searchTerm]);
+  }, [searchTerm, currentPage]);
 
   return (
     <>
@@ -212,6 +215,22 @@ const Home = () => {
               />
             </div>
           ))}
+        </div>
+        <div className="flex justify-center container mx-auto my-5">
+          <button
+            className="mx-2 px-4 py-2 bg-orange-500 rounded-md text-white disabled:opacity-50"
+            disabled={currentPage === 1}
+            onClick={handlePrevPage}
+          >
+            <FaAngleLeft />
+          </button>
+          <span className="mx-2 px-4 py-2">{currentPage}</span>
+          <button
+            className="mx-2 px-4 py-2 bg-orange-500 rounded-md text-white"
+            onClick={handleNextPage}
+          >
+            <FaAngleRight />
+          </button>
         </div>
       </div>
     </>

@@ -24,23 +24,27 @@ const Card = ({ image, name, types, abilities, handleDetail }) => {
         </div>
 
         {/* Abilities */}
-        <div className="flex flex-wrap items-center text-gray-700">
+        <div className="flex flex-wrap items-center text-gray-700 mt-2">
           <p className="text-gray-700 text-xs md:text-md">Abilities:</p>
           {abilities?.map((abl, index) => {
-            if (index === 0) {
+            if (index <= 1) {
               return (
-                <span key={index}
+                <span
+                  key={index}
+                  className="ml-3 bg-gray-100 text-gray-800 text-xs px-2.5 py-0.5 rounded"
+                >
+                  {abl.ability.name || "Unknown"}
+                </span>
+              );
+            } else if (index == 2) {
+              <span
+                key={index}
                 className="ml-3 bg-gray-100 text-gray-800 text-xs px-2.5 py-0.5 rounded"
               >
-                {abl?.ability?.name || "Unknown"}
-              </span>
-              )
+                ...
+              </span>;
             } else {
-              <span key={index}
-              className="ml-3 bg-gray-100 text-gray-800 text-xs px-2.5 py-0.5 rounded"
-            >
-              ...
-            </span>
+              return null;
             }
           })}
         </div>
