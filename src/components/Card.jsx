@@ -3,7 +3,10 @@ import React from "react";
 
 const Card = ({ image, name, types, abilities, handleDetail }) => {
   return (
-    <div className="rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl mx-auto w-64 md:w-[20rem] h-auto md:h-full hover:scale-105 transition duration-300 ease-in-out">
+    <div
+      className="rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl mx-auto w-64 md:w-[20rem] h-auto md:h-full hover:scale-105 transition duration-300 ease-in-out"
+      onClick={handleDetail}
+    >
       <img src={image} alt={name} className="w-64 md:w-full mx-auto" />
       <div className="px-6 py-4 text-sm md:text-base h-full">
         <h3 className="font-bold text-md md:text-xl mb-2">

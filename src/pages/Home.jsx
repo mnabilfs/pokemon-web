@@ -8,18 +8,22 @@ import ReactSelect from "react-select";
 import axios, { Axios } from "axios";
 import Card from "../components/Card";
 import { FaAngleRight } from "react-icons/fa";
+import Modal from "../components/Modal";
 
 const Home = () => {
   const [pokemonOption, setPokemonOption] = useState([]);
   const [pokemonData, setpokemonData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [pokemonDetail,setPokemonDetail] = useState([])
 
   const fetchData = async (search, currentPage) => {
     try {
       let url = search
         ? `https://pokeapi.co/api/v2/pokemon/${search}`
-        : `https://pokeapi.co/api/v2/pokemon?limit=6&offset=` + (currentPage - 1) * 6;
+        : `https://pokeapi.co/api/v2/pokemon?limit=6&offset=` +
+          (currentPage - 1) * 6;
 
       const res = await axios.get(url);
 
@@ -90,6 +94,18 @@ const Home = () => {
   const handlePrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
+
+  const handleDetail = async (data) => {
+    setModalOpen(true)
+    try {
+      const res = await axios.get(data.url)
+      setPokemonDetail(res.data)
+
+    } catch (error) {
+      console.log("Error : ", error);
+      
+    }
+  }
 
   useEffect(() => {
     fetchData(searchTerm, currentPage);
@@ -212,6 +228,7 @@ const Home = () => {
                 image={pokemon.image}
                 types={pokemon.types}
                 abilities={pokemon.abilities}
+                handleDetail={() => handleDetail(pokemon)}
               />
             </div>
           ))}
@@ -233,6 +250,13 @@ const Home = () => {
           </button>
         </div>
       </div>
+      <Modal
+        modalOPen={modalOpen}
+        toggleModal={() => {
+          setModalOpen(!modalOpen);
+        }}
+        data={pokemonDetail}
+      />
     </>
   );
 };
