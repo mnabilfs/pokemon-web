@@ -112,6 +112,14 @@ const Home = () => {
     fetchOption();
   }, [searchTerm, currentPage]);
 
+  // Condition according to pokemonData when searchTerm
+  useEffect(() => {
+    if (pokemonData.length === 1 && searchTerm !== "") {
+      setCurrentPage(1);
+    }
+  }, [pokemonData, searchTerm]);
+  
+
   return (
     <>
       <div className="w-full">
@@ -243,7 +251,8 @@ const Home = () => {
           </button>
           <span className="mx-2 px-4 py-2">{currentPage}</span>
           <button
-            className="mx-2 px-4 py-2 bg-orange-500 rounded-md text-white"
+            className="mx-2 px-4 py-2 bg-orange-500 rounded-md text-white disabled:opacity-50"
+            disabled={pokemonData.length < 6 || searchTerm !== ""}
             onClick={handleNextPage}
           >
             <FaAngleRight />

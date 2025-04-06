@@ -48,13 +48,13 @@ function Modal({ modalOPen, toggleModal, data }) {
                   <div>
                     <h4 className="text-xl mb-5">Details</h4>
                     <div className="flex flex-col">
-                      <p className="text-sm leading-relaxed text-gray-500">
+                      <p className="text-sm leading-relaxed text-gray-500 mb-2">
                         Height: {data?.height} dm
                       </p>
-                      <p className="text-sm leading-relaxed text-gray-500">
+                      <p className="text-sm leading-relaxed text-gray-500 mb-2">
                         Weight: {data?.weight} kg
                       </p>
-                      <p className="text-sm leading-relaxed text-gray-500">
+                      <p className="text-sm leading-relaxed text-gray-500 mb-2">
                         Type:{" "}
                         {data?.types?.map((type, index) => {
                           if (index == data?.types?.length - 1) {
@@ -75,15 +75,15 @@ function Modal({ modalOPen, toggleModal, data }) {
                           }
                         })}
                       </p>
-                      <p className="text-sm leading-relaxed text-gray-500">
+                      <p className="text-sm leading-relaxed text-gray-500 mb-2">
                         Base Experience: {data?.base_experience}
                       </p>
-                      <p className="text-sm leading-relaxed text-gray-500">
+                      <p className="text-sm leading-relaxed text-gray-500 mb-2">
                         Species:{" "}
                         {data?.species?.name.charAt(0).toUpperCase() +
                           data?.species?.name.slice(1)}
                       </p>
-                      <p className="text-sm leading-relaxed text-gray-500">
+                      <p className="text-sm leading-relaxed text-gray-500 mb-2">
                         Abilities:{" "}
                         {data?.abilities?.map((abilities, index) => {
                           if (index == data?.abilities?.length - 1) {
