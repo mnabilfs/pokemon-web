@@ -1,9 +1,10 @@
 "use client";
 
 import { Navbar } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbars = () => {
+  const location = useLocation()
   return (
     <Navbar rounded className="shadow-md">
       <Navbar.Brand as={Link} href="https://flowbite-react.com">
@@ -12,10 +13,10 @@ const Navbars = () => {
       </Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse>
-        <Navbar.Link as={Link} to="/">
+        <Navbar.Link as={Link} to="/" active={location.pathname === "/"}>
           Home
         </Navbar.Link>
-        <Navbar.Link as={Link} to="/">
+        <Navbar.Link as={Link} to="/rating" active={location.pathname === "/rating"}>
           Rating
         </Navbar.Link>
         <Navbar.Link as={Link} to="/">
