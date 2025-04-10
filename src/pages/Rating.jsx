@@ -3,6 +3,7 @@ import Rating from "react-rating";
 import { FaTrash } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { comment } from "postcss";
+import { toast, ToastContainer } from "react-toastify";
 
 const Ratings = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -42,8 +43,32 @@ const Ratings = () => {
     setIsEdit(false);
   };
 
+  const handleDelete = (id) => {
+    const updateComment = comments.filter((comment) => comment.id !== id);
+    setComments(updateComment);
+  };
+
+  const handleAdd = () => {
+    if(!newComment.rating || !newComment.comment){
+      toast.error("Please fill the rating and comment!")
+      return
+    }
+    const newId = comments.length + 1;
+    setComments([
+      ...comments,
+      {
+        id: newId,
+        name: "Anonymous",
+        rating: newComment.rating,
+        comment: newComment.comment,
+      },
+    ]);
+    setNewComment({ rating: 0, comment: "" });
+  };
+
   return (
     <div className="mx-5 md:container md:mx-auto">
+      <ToastContainer/>
       <div className="text-2xl font-bold my-5">
         How would you describe our website?
       </div>
@@ -72,7 +97,10 @@ const Ratings = () => {
           ></textarea>
         </div>
         <div className="flex justify-end pb-3 mx-3">
-          <button className="bg-green-400 text-white px-4 py-2 rounded-md">
+          <button
+            className="bg-green-400 text-white px-4 py-2 rounded-md"
+            onClick={handleAdd}
+          >
             Send
           </button>
         </div>
@@ -133,7 +161,10 @@ const Ratings = () => {
                       />
                     </div>
                     <div className="flex gap-3">
-                      <FaTrash className="text-red-500 cursor-pointer" />
+                      <FaTrash
+                        className="text-red-500 cursor-pointer"
+                        onClick={() => handleDelete(comment.id)}
+                      />
                       <FaEdit
                         className="text-blue-500 cursor-pointer"
                         onClick={() => {
@@ -159,7 +190,7 @@ const Ratings = () => {
                         comment: e.target.value,
                       });
                     }}
-                    className="border p-2 rounded-md w-full h-[8rem] focus:outline-none focus:ring-transparent"
+                    className="border p-2 rounded-md w-full h-[8rem] focus:border-green-500 focus:outline-none focus:ring-transparent"
                   ></textarea>
                 ) : (
                   comment.comment

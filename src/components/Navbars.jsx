@@ -7,7 +7,7 @@ const Navbars = () => {
   const location = useLocation()
   return (
     <Navbar rounded className="shadow-md">
-      <Navbar.Brand as={Link} href="https://flowbite-react.com">
+      <Navbar.Brand as={Link} to="/" href="https://flowbite-react.com">
         <img src="https://pngimg.com/uploads/pokemon/pokemon_PNG125.png" className="mr-3 h-6 sm:h-9" alt="Poke Pedia Logo" />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Poke Pedia</span>
       </Navbar.Brand>
@@ -19,7 +19,7 @@ const Navbars = () => {
         <Navbar.Link as={Link} to="/rating" active={location.pathname === "/rating"}>
           Rating
         </Navbar.Link>
-        <Navbar.Link as={Link} to="/">
+        <Navbar.Link as={Link} to="/about" active={location.pathname === "/about"}>
           About
         </Navbar.Link>
         
